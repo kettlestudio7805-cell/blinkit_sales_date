@@ -1,0 +1,73 @@
+[
+  {
+    "item_id": 10167070,
+    "item_name": "Kettle Studio Tabasco Sauce Flavour Potato Chips",
+    "manufacturer_id": 66,
+    "manufacturer_name": "Indo Nissin",
+    "city_id": 334,
+    "city_name": "Bhavnagar",
+    "category": "Organic & Premium",
+    "date": "9/10/2025",
+    "qty_sold": 1,
+    "mrp": 99
+  },
+  {
+    "item_id": 10167070,
+    "item_name": "Kettle Studio Tabasco Sauce Flavour Potato Chips",
+    "manufacturer_id": 66,
+    "manufacturer_name": "Indo Nissin",
+    "city_id": 82,
+    "city_name": "Rudrapur",
+    "category": "Organic & Premium",
+    "date": "9/10/2025",
+    "qty_sold": 1,
+    "mrp": 99
+  },
+  {
+    "item_id": 10167065,
+    "item_name": "Kettle Studio Tabasco Sauce Flavour Potato Chips",
+    "manufacturer_id": 66,
+    "manufacturer_name": "Indo Nissin",
+    "city_id": 207,
+    "city_name": "Jamshedpur",
+    "category": "Organic & Premium",
+    "date": "9/1/2025",
+    "qty_sold": 1,
+    "mrp": 49
+  },
+  {
+    "item_id": 10167070,
+    "item_name": "Kettle Studio Tabasco Sauce Flavour Potato Chips",
+    "manufacturer_id": 66,
+    "manufacturer_name": "Indo Nissin",
+    "city_id": 257,
+    "city_name": "Mysore",
+    "category": "Organic & Premium",
+    "date": "9/1/2025",
+    "qty_sold": 1,
+    "mrp": 99
+  },
+  {
+    "item_id": 10167070,
+    "item_name": "Kettle Studio Tabasco Sauce Flavour Potato Chips",
+    "manufacturer_id": 66,
+    "manufacturer_name": "Indo Nissin",
+    "city_id": 2,
+    "city_name": "Mumbai",
+    "category": "Organic & Premium",
+    "date": "9/14/2025",
+    "qty_sold": 18,
+    "mrp": 1782
+  },
+  {
+    "item_id": 10167070,
+    "item_name": "Kettle Studio Tabasco Sauce Flavour Potato Chips",
+    "manufacturer_id": 66,
+    "manufacturer_name": "Indo Nissin",
+    "city_id": 1,
+    "city_name": "Bengaluru",
+    "category": "Organic & Premium",
+    "date": "9/14/2025",
+    "qty_sold": 12,
+    "mrp": 1188
+  }, this is my csv data which i have converted into json for you understanding this is my blinkit sales data so i want to do visuallization of all the data with all advance feature filter so can you make somthing where i can upload csv file and the data can be visualize advancly 
