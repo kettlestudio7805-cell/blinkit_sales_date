@@ -27,6 +27,8 @@ export type SalesData = typeof salesData.$inferSelect;
 // Filter schemas
 export const filtersSchema = z.object({
   dateRange: z.string().optional(),
+  dateFrom: z.string().optional(),
+  dateTo: z.string().optional(),
   city: z.string().optional(),
   manufacturer: z.string().optional(),
   category: z.string().optional(),

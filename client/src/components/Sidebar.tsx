@@ -18,10 +18,10 @@ export function Sidebar({ className }: SidebarProps) {
 
   const navigationItems = [
     { icon: TrendingUp, label: "Dashboard", href: "#", active: true },
-    { icon: Upload, label: "Data Upload", href: "#upload" },
-    { icon: BarChart3, label: "Analytics", href: "#analytics" },
-    { icon: Table, label: "Data Table", href: "#table" },
-    { icon: Download, label: "Export", href: "#export" },
+   // { icon: Upload, label: "Data Upload", href: "#upload" },
+   // { icon: BarChart3, label: "Analytics", href: "#analytics" },
+   // { icon: Table, label: "Data Table", href: "#table" },
+   // { icon: Download, label: "Export", href: "#export" },
   ];
 
   return (
@@ -53,12 +53,20 @@ export function Sidebar({ className }: SidebarProps) {
         )}
       >
         <div className="p-6">
-          <div className="flex items-center space-x-3 mb-8">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <BarChart3 className="text-primary-foreground w-4 h-4" />
-            </div>
-            <h1 className="text-xl font-semibold text-foreground">Blinkit Analytics</h1>
-          </div>
+        <div className="flex items-center space-x-3 mb-8">
+  <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+    <BarChart3 className="text-primary-foreground w-4 h-4" />
+  </div>
+  <div>
+    <h1 className="text-xl font-semibold text-foreground">
+      Blinkit Analytics
+    </h1>
+    <p className="text-xs text-muted-foreground">
+      Powered by KettleStudio
+    </p>
+  </div>
+</div>
+
 
           <nav className="space-y-2">
             {navigationItems.map((item) => (

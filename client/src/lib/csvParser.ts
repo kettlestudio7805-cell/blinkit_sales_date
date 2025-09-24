@@ -55,6 +55,11 @@ export function parseCSV(csvContent: string) {
 
 export function validateCSVStructure(file: File): Promise<boolean> {
   return new Promise((resolve, reject) => {
+    // If it's an Excel file, allow it. We'll validate on the server.
+    if (/\.xlsx$|\.xls$/i.test(file.name)) {
+      resolve(true);
+      return;
+    }
     const reader = new FileReader();
     
     reader.onload = (e) => {

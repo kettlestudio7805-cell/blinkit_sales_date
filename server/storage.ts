@@ -47,6 +47,55 @@ export class MemStorage implements IStorage {
   async getSalesDataWithFilters(filters: Filters): Promise<SalesData[]> {
     let data = Array.from(this.salesData.values());
 
+    // Date range: supports preset and custom from/to (expects YYYY-MM-DD or similar)
+    // Apply preset ranges (last7/last30) or custom dates if provided
+    if (filters.dateRange && filters.dateRange !== 'all') {
+      const parse = (d: string) => new Date(d).getTime();
+      const within = (d: string, from: number, to: number) => {
+        const t = parse(d);
+        return !isNaN(t) && t >= from && t <= to;
+      };
+
+      if (filters.dateRange === 'last7' || filters.dateRange === 'last30') {
+        const days = filters.dateRange === 'last7' ? 7 : 30;
+        // use max date in dataset as reference
+        const maxTime = data.reduce((m, it) => Math.max(m, parse(it.date)), 0);
+        const to = maxTime || Date.now();
+        const from = to - (days - 1) * 24 * 60 * 60 * 1000;
+        data = data.filter(item => within(item.date, from, to));
+      } else if (filters.dateRange === 'custom' && filters.dateFrom && filters.dateTo) {
+        const from = parse(filters.dateFrom);
+        const to = parse(filters.dateTo);
+        if (!isNaN(from) && !isNaN(to)) {
+          data = data.filter(item => within(item.date, from, to));
+        }
+      }
+    }
+
+    // Additionally, honor explicit dateFrom/dateTo even if dateRange not set to 'custom'
+    if (filters.dateFrom || filters.dateTo) {
+      const parse = (d: string) => new Date(d).getTime();
+      let from = Number.NEGATIVE_INFINITY;
+      let to = Number.POSITIVE_INFINITY;
+      if (filters.dateFrom) {
+        const t = parse(filters.dateFrom);
+        if (!isNaN(t)) from = t;
+      }
+      if (filters.dateTo) {
+        const t = parse(filters.dateTo);
+        if (!isNaN(t)) {
+          // include the entire end day by adding almost one day minus 1ms
+          const endOfDay = new Date(t);
+          endOfDay.setHours(23, 59, 59, 999);
+          to = endOfDay.getTime();
+        }
+      }
+      data = data.filter(item => {
+        const t = parse(item.date);
+        return !isNaN(t) && t >= from && t <= to;
+      });
+    }
+
     if (filters.city && filters.city !== 'All Cities') {
       data = data.filter(item => item.city_name === filters.city);
     }

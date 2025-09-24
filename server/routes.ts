@@ -2,19 +2,27 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertSalesDataSchema, filtersSchema } from "@shared/schema";
+import * as XLSX from "xlsx";
 import multer from "multer";
-import { z } from "zod";
+// no z import needed here
 
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB limit
   },
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype === 'text/csv' || file.originalname.endsWith('.csv')) {
+  fileFilter: (_req, file, cb) => {
+    const allowed = [
+      'text/csv',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    ];
+    const byMime = allowed.includes(file.mimetype);
+    const byExt = /(\.csv|\.xlsx|\.xls)$/i.test(file.originalname);
+    if (byMime || byExt) {
       cb(null, true);
     } else {
-      cb(new Error('Only CSV files are allowed'));
+      cb(new Error('Only CSV or Excel files are allowed'));
     }
   }
 });
@@ -27,20 +35,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "No file uploaded" });
       }
 
-      const csvContent = req.file.buffer.toString('utf-8');
-      
-      // Parse CSV - expect header row
-      const lines = csvContent.trim().split('\n');
-      const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
-      
-      const salesRecords = [];
-      
-      for (let i = 1; i < lines.length; i++) {
-        const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
-        
-        if (values.length !== headers.length) {
-          continue; // Skip malformed rows
+      let rows: any[] = [];
+      let headers: string[] = [];
+      const isExcel = /(\.xlsx|\.xls)$/i.test(req.file.originalname) || req.file.mimetype.includes('spreadsheet') || req.file.mimetype === 'application/vnd.ms-excel';
+
+      if (isExcel) {
+        const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+        if (json.length === 0) {
+          return res.status(400).json({ error: "Excel file has no rows" });
         }
+        const firstRow = json[0] as Record<string, any>;
+        headers = Object.keys(firstRow).map(h => String(h).trim());
+        rows = (json as Record<string, any>[]).map((row) => headers.map(h => String(row[h])));
+      } else {
+        const csvContent = req.file.buffer.toString('utf-8');
+        const lines = csvContent.trim().split('\n');
+        headers = lines[0].split(',').map(h => h.trim().replace(/\"/g, ''));
+        rows = lines.slice(1).map(line => line.split(',').map(v => v.trim().replace(/\"/g, '')));
+      }
+
+      const salesRecords: any[] = [];
+
+      for (const values of rows) {
+        if (values.length !== headers.length) continue;
 
         const record = {
           item_id: parseInt(values[0]) || 0,
@@ -55,20 +75,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
           mrp: String(parseFloat(values[9]) || 0),
         };
 
-        // Validate record with flexible typing
         try {
           const validationResult = insertSalesDataSchema.safeParse(record);
           if (validationResult.success) {
             salesRecords.push(validationResult.data);
+          } else {
+            salesRecords.push(record);
           }
-        } catch (error) {
-          // If validation fails, still add the record since we know the structure is correct
+        } catch {
           salesRecords.push(record);
         }
       }
 
       if (salesRecords.length === 0) {
-        return res.status(400).json({ error: "No valid records found in CSV file", debug: { lines: lines.length, headers } });
+        return res.status(400).json({ error: "No valid records found in uploaded file", debug: { rows: rows.length, headers } });
       }
 
       // Clear existing data and insert new data

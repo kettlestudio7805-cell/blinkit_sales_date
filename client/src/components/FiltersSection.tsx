@@ -70,6 +70,30 @@ export function FiltersSection({ onFiltersChange, activeFilters }: FiltersSectio
               <SelectItem value="custom">Custom Range</SelectItem>
             </SelectContent>
           </Select>
+          {activeFilters.dateRange === 'custom' && (
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1">
+                <label className="text-xs text-muted-foreground">From</label>
+                <input
+                  type="date"
+                  value={activeFilters.dateFrom || ''}
+                  onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
+                  className="w-full rounded border border-input bg-background px-2 py-1 text-sm"
+                  data-testid="input-date-from"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs text-muted-foreground">To</label>
+                <input
+                  type="date"
+                  value={activeFilters.dateTo || ''}
+                  onChange={(e) => handleFilterChange('dateTo', e.target.value)}
+                  className="w-full rounded border border-input bg-background px-2 py-1 text-sm"
+                  data-testid="input-date-to"
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* City Filter */}

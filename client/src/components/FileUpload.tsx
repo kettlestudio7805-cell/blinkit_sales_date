@@ -73,6 +73,8 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
     onDrop,
     accept: {
       'text/csv': ['.csv'],
+      'application/vnd.ms-excel': ['.xls'],
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
     },
     multiple: false,
     maxSize: 10 * 1024 * 1024, // 10MB

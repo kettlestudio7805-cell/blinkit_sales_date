@@ -19,6 +19,8 @@ export interface FilterOptions {
 
 export interface ActiveFilters {
   dateRange?: string;
+  dateFrom?: string;
+  dateTo?: string;
   city?: string;
   manufacturer?: string;
   category?: string;
