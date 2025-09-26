@@ -21,6 +21,8 @@ export class MemStorage implements IStorage {
 
   constructor() {
     this.salesData = new Map();
+         this.clearSalesData();
+
   }
 
   async insertSalesData(data: InsertSalesData[]): Promise<SalesData[]> {
