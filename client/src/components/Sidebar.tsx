@@ -5,9 +5,11 @@ import {
   TrendingUp, 
   Table, 
   Download,
-  Menu 
+  Menu,
+  Trash2
 } from "lucide-react";
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface SidebarProps {
   className?: string;
@@ -15,13 +17,23 @@ interface SidebarProps {
 
 export function Sidebar({ className }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const queryClient = useQueryClient();
+
+  // clearData function
+  const clearData = async () => {
+    try {
+      await fetch("/api/sales", {
+        method: "DELETE",
+      });
+      queryClient.invalidateQueries(); // refreshes cached queries
+      alert("All data cleared. Please upload a new file.");
+    } catch (error) {
+      console.error("Error clearing data:", error);
+    }
+  };
 
   const navigationItems = [
     { icon: TrendingUp, label: "Dashboard", href: "#", active: true },
-   // { icon: Upload, label: "Data Upload", href: "#upload" },
-   // { icon: BarChart3, label: "Analytics", href: "#analytics" },
-   // { icon: Table, label: "Data Table", href: "#table" },
-   // { icon: Download, label: "Export", href: "#export" },
   ];
 
   return (
@@ -53,20 +65,19 @@ export function Sidebar({ className }: SidebarProps) {
         )}
       >
         <div className="p-6">
-        <div className="flex items-center space-x-3 mb-8">
-  <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-    <BarChart3 className="text-primary-foreground w-4 h-4" />
-  </div>
-  <div>
-    <h1 className="text-xl font-semibold text-foreground">
-      Blinkit Analytics
-    </h1>
-    <p className="text-xs text-muted-foreground">
-      Powered by KettleStudio
-    </p>
-  </div>
-</div>
-
+          <div className="flex items-center space-x-3 mb-8">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <BarChart3 className="text-primary-foreground w-4 h-4" />
+            </div>
+            <div>
+              <h1 className="text-xl font-semibold text-foreground">
+                Blinkit Analytics
+              </h1>
+              <p className="text-xs text-muted-foreground">
+                Powered by KettleStudio
+              </p>
+            </div>
+          </div>
 
           <nav className="space-y-2">
             {navigationItems.map((item) => (
@@ -86,9 +97,19 @@ export function Sidebar({ className }: SidebarProps) {
                 <span>{item.label}</span>
               </a>
             ))}
+
+            {/* Clear Data Button */}
+            <button
+              onClick={clearData}
+              className="flex items-center space-x-3 px-3 py-2 rounded-md transition-colors text-red-500 hover:bg-accent hover:text-accent-foreground w-full mt-4"
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>Clear Data</span>
+            </button>
           </nav>
         </div>
       </div>
     </>
   );
 }
+
