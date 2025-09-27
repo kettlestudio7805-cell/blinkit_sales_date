@@ -35,7 +35,7 @@ export function MetricsOverview({ filters }: MetricsOverviewProps) {
     {
       title: "Total Revenue",
       value: `₹${metrics.totalRevenue.toLocaleString()}`,
-      change: "+12.5% from last month",
+      change: "",
       icon: TrendingUp,
       iconBg: "bg-green-100",
       iconColor: "text-green-600",
@@ -44,7 +44,7 @@ export function MetricsOverview({ filters }: MetricsOverviewProps) {
     {
       title: "Quantity Sold",
       value: `${metrics.totalQuantity} units`,
-      change: "+8.3% from last month",
+      change: "",
       icon: Package,
       iconBg: "bg-blue-100",
       iconColor: "text-blue-600",
